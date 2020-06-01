@@ -14,9 +14,10 @@ type Scanner struct {
 	overFlow *bytes.Buffer // contains the start of the next file, if there was an overflow.
 	buf      []byte
 
-	bytesRead  int // total bytes read from source.
-	matchCount int // matches consecutive gzip magic bytes.
-	size       int // internal buffer size
+	bytesRead   int // total bytes read from source.
+	byteWritten int // total bytes written.
+	matchCount  int // matches consecutive gzip magic bytes.
+	size        int // internal buffer size
 
 	err error
 }
@@ -76,7 +77,7 @@ func (s *Scanner) loadNextFile() error {
 			return err
 		}
 		for j := 0; j < n; j++ {
-			if s.bytesRead == 0 {
+			if s.byteWritten == 0 {
 				continue
 			}
 			switch s.matchCount {
@@ -98,7 +99,9 @@ func (s *Scanner) loadNextFile() error {
 				break
 			}
 		}
-		s.fileBuf.Write(s.buf[:n])
+		if err := s.write(s.buf[:n]); err != nil {
+			return err
+		}
 		if s.err == io.EOF {
 			return nil
 		}
@@ -109,21 +112,9 @@ func (s *Scanner) loadNextFile() error {
 func (s *Scanner) initFileBuf() error {
 	s.fileBuf.Reset()
 	if _, err := s.fileBuf.Write(s.overFlow.Bytes()); err != nil {
-		s.err = err
-		return err
+		return s.setErr(err)
 	}
 	s.overFlow.Reset()
-	return nil
-}
-
-func (s *Scanner) writeCutoff(buf []byte, cutoff int) error {
-	s.matchCount = 0
-	if _, err := s.fileBuf.Write(buf[:cutoff]); err != nil {
-		return err
-	}
-	if _, err := s.overFlow.Write(buf[cutoff:]); err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -137,6 +128,26 @@ func (s *Scanner) read(buf []byte) (int, error) {
 	return n, err
 }
 
+func (s *Scanner) write(buf []byte) error {
+	n, err := s.fileBuf.Write(buf)
+	if err != nil {
+		return s.setErr(err)
+	}
+	s.byteWritten += n
+	return nil
+}
+
+func (s *Scanner) writeCutoff(buf []byte, cutoff int) error {
+	s.matchCount = 0
+	if err := s.write(buf[:cutoff]); err != nil {
+		return err
+	}
+	if _, err := s.overFlow.Write(buf[cutoff:]); err != nil {
+		return s.setErr(err)
+	}
+	return nil
+}
+
 func (s *Scanner) matchByte(b1, b2 byte) bool {
 	if b1 == b2 {
 		s.matchCount++
@@ -144,4 +155,9 @@ func (s *Scanner) matchByte(b1, b2 byte) bool {
 	}
 	s.matchCount = 0
 	return false
+}
+
+func (s *Scanner) setErr(err error) error {
+	s.err = err
+	return err
 }
