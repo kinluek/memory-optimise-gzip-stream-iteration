@@ -12,12 +12,13 @@ type Scanner struct {
 
 	fileBuf  *bytes.Buffer // buffers a single file into memory.
 	overFlow *bytes.Buffer // contains the start of the next file, if there was an overflow.
-	buf      []byte
+
+	buf      []byte        // internal buffer
+	bufSize  int           // internal buffer size
 
 	bytesRead   int // total bytes read from source.
 	byteWritten int // total bytes written.
 	matchCount  int // matches consecutive gzip magic bytes.
-	size        int // internal buffer size
 
 	err error
 }
@@ -29,7 +30,7 @@ func NewScanner(r io.Reader, internalBufSize int) *Scanner {
 		fileBuf:  &bytes.Buffer{},
 		overFlow: &bytes.Buffer{},
 		buf:      make([]byte, internalBufSize),
-		size:     internalBufSize,
+		bufSize:  internalBufSize,
 	}
 }
 
