@@ -1,4 +1,4 @@
-module github.com/mirrorweb/gzipped
+module github.com/kinluek/gzipstream
 
 go 1.14
 

@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/mirrorweb/gzipped"
+	"github.com/kinluek/gzipstream"
 	"log"
 	"os"
 	"runtime"
@@ -59,7 +59,7 @@ func makeConcatFile() (*os.File, error) {
 	}
 
 	for i := 0; i < 1000; i++ {
-		filler := strings.Repeat("a", 1024*1024)  // create data in the loop to cause some allocations for the profiler to pick up.
+		filler := strings.Repeat("a", 1024*1024) // create data in the loop to cause some allocations for the profiler to pick up.
 		fillerBytes := []byte(filler)
 		if _, err := f.Write([]byte{0x00, 0x00, 0x1f, 0x8b}); err != nil {
 			return nil, err
@@ -73,7 +73,7 @@ func makeConcatFile() (*os.File, error) {
 }
 
 func program(f *os.File) error {
-	scanner := gzipped.NewScanner(f, 1024)
+	scanner := gzipstream.NewScanner(f, 1024)
 	for i := 1; scanner.Scan(); i++ {
 		scannedFile := scanner.FileBytes()
 		fmt.Println(i, len(scannedFile))

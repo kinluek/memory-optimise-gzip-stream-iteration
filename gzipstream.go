@@ -1,11 +1,11 @@
-package gzipped
+package gzipstream
 
 import (
 	"bytes"
 	"io"
 )
 
-// Scanner knows how to iterate through a multi gzipped file stream, returning a single
+// Scanner knows how to iterate through a multi gzipstream file stream, returning a single
 // zip file upon each iteration.
 type Scanner struct {
 	r io.Reader

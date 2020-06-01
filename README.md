@@ -1,4 +1,4 @@
-# gzipped
+# gzipstream
 
 Package used to read and split a stream of concatenated gzip files, no unzipping involved. 
 
