@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/kinluek/gzipstream"
+	"github.com/kinluek/memory-optimise-gzip-stream-iteration/gzipstream"
 	"log"
 	"os"
 	"runtime"

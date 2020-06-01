@@ -1,4 +1,4 @@
-module github.com/kinluek/gzipstream
+module github.com/kinluek/memory-optimise-gzip-stream-iteration
 
 go 1.14
 
