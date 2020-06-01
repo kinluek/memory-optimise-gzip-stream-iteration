@@ -76,24 +76,24 @@ func (s *Scanner) loadNextFile() error {
 		if err != nil {
 			return err
 		}
-		for j := 0; j < n; j++ {
+		for i := 0; i < n; i++ {
 			if s.byteWritten == 0 {
 				continue
 			}
 			switch s.matchCount {
 			case 0:
-				if s.matchByte(s.buf[j], gzipMagicBytes[0]) {
-					cutoffIdx = j
+				if s.matchByte(s.buf[i], gzipMagicBytes[0]) {
+					cutoffIdx = i
 				}
 				break
 			case 1:
-				s.matchByte(s.buf[j], gzipMagicBytes[1])
+				s.matchByte(s.buf[i], gzipMagicBytes[1])
 				break
 			case 2:
-				s.matchByte(s.buf[j], gzipMagicBytes[2])
+				s.matchByte(s.buf[i], gzipMagicBytes[2])
 				break
 			case 3:
-				if s.matchByte(s.buf[j], gzipMagicBytes[3]) {
+				if s.matchByte(s.buf[i], gzipMagicBytes[3]) {
 					return s.writeCutoff(s.buf, cutoffIdx)
 				}
 				break
