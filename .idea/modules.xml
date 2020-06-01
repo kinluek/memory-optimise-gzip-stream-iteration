@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../gzipped/.idea/multizip.iml" filepath="$PROJECT_DIR$/../gzipped/.idea/multizip.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/memory-optimise-gzip-stream-iteration.iml" filepath="$PROJECT_DIR$/.idea/memory-optimise-gzip-stream-iteration.iml" />
     </modules>
   </component>
 </project>
